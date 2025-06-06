@@ -40,6 +40,17 @@ jobs:
           docker build -f proxy-client/Dockerfile \
             -t ${{ secrets.DOCKER_USERNAME }}/proxy-client-ecommerce-boot:$IMAGE_TAG .
 
+      - name: Installing Trivy
+        run: |
+          echo "Installing Trivy..."
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+          
+      - name: Scan Docker image with Trivy
+        run: |
+          IMAGE_TAG=develop-${{ github.run_number }}
+          echo "Scanning image..."
+          trivy image --severity HIGH,CRITICAL --exit-code 1 --no-progress ${{ secrets.DOCKER_USERNAME }}/proxy-client-ecommerce-boot:$IMAGE_TAG
+
       - name: Push Docker image
         run: |
           IMAGE_TAG=develop-${{ github.run_number }}
