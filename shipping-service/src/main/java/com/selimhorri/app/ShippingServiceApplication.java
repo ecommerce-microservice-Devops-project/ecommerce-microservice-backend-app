@@ -14,8 +14,6 @@ public class ShippingServiceApplication {
 		SpringApplication.run(ShippingServiceApplication.class, args);
 	}
 	
-	
-	
 }
 
 @RestController
