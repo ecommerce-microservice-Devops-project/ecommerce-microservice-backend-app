@@ -1,7 +1,39 @@
+server:
+  port: 8761
+
 spring:
   application:
     name: service-discovery
   config:
     import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://cloud-config:9296}
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: INFO
+      springframework:
+        web: INFO
+        data: INFO
+      boot:
+        autoconfigure:
+          data:
+            rest: INFO
+            jpa: INFO
+            orm: INFO
+
+# Optional: Only if you want to force dev profile here
+spring:
   profiles:
     active: dev
