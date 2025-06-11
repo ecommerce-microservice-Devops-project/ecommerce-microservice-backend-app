@@ -6,6 +6,8 @@ spring:
     name: service-discovery
   config:
     import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://cloud-config:9296}
+  profiles:
+    active: dev
 
 eureka:
   client:
@@ -33,7 +35,3 @@ logging:
             jpa: INFO
             orm: INFO
 
-# Optional: Only if you want to force dev profile here
-spring:
-  profiles:
-    active: dev
