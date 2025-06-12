@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f compose.yml
+    kompose.cmd: kompose convert -f compose.yml #automatización de generacion de manifest k8s
     kompose.version: 1.22.0 (955b78124)
   creationTimestamp: null
   labels:
