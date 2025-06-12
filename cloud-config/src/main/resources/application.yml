@@ -6,13 +6,12 @@ spring:
   zipkin:
     base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411/}
   application:
-    name: cloud-config
+    name: CLOUD-CONFIG
   cloud:
     config:
-      enabled: false
       server:
         git:
-          uri: https://github.com/ecommerce-microservice-Devops-project/cloud-configs
+          uri: https://github.com/SelimHorri/cloud-config-server
           clone-on-start: true
 
 resilience4j:
@@ -40,3 +39,11 @@ management:
   endpoint:
     health:
       show-details: always
+
+
+
+
+
+
+
+
