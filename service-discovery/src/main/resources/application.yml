@@ -3,11 +3,12 @@ server:
 
 spring:
   application:
-    name: service-discovery
+    name: product-service
   config:
-    import: ${SPRING_CONFIG_IMPORT}/
+    import: ${SPRING_CONFIG_IMPORT:/}
   profiles:
     active: dev
+
 
 eureka:
   client:
