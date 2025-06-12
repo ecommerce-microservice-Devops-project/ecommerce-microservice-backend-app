@@ -5,7 +5,7 @@ spring:
   application:
     name: service-discovery
   config:
-    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://cloud-config:9296}
+    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://cloud-config:9296}/
   profiles:
     active: dev
 
