@@ -1,22 +1,19 @@
+
 server:
   port: 9296
 
 spring:
-  application:
-    name: CLOUD-CONFIG
   zipkin:
     base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411/}
+  application:
+    name: cloud-config
   cloud:
     config:
+      enabled: false
       server:
         git:
           uri: https://github.com/ecommerce-microservice-Devops-project/cloud-configs
           clone-on-start: true
-
-eureka:
-  client:
-    register-with-eureka: false
-    fetch-registry: false
 
 resilience4j:
   circuitbreaker:
