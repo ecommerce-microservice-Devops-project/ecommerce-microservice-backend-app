@@ -12,7 +12,7 @@ spring:
       enabled: false
       server:
         git:
-          uri: https://github.com/ecommerce-microservice-Devops-project/cloud-configs.git
+          uri: https://github.com/ecommerce-microservice-Devops-project/cloud-configs
           clone-on-start: true
 
 resilience4j:
