@@ -10,8 +10,3 @@ EXPOSE 8700
 ENTRYPOINT ["java", "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}", "-jar", "user-service.jar"]
 
 
-
-
-
-
-#test
