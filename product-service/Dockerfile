@@ -10,4 +10,4 @@ ENTRYPOINT ["java", "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}", "-jar"
 
 
 
-
+#test
