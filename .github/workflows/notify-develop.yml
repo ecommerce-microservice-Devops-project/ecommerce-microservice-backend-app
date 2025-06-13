@@ -37,7 +37,7 @@ jobs:
               "text": ":rocket: *Merge to Develop!* PR by ${{ steps.pr_data.outputs.data }}"
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
       - name: Send email notification
         if: github.event.pull_request.merged == true
