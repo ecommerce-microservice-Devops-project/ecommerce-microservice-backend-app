@@ -1,0 +1,42 @@
+name: Develop, on PR Java CI/CD for modified microservices
+
+on:
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  build-modified:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Detect modified microservices
+        id: detect
+        run: |
+          echo "MODIFIED_SERVICES=" >> $GITHUB_ENV
+          SERVICES=(favourite-service payment-service shipping-service cloud-config api-gateway product-service proxy-client user-service order-service service-discovery)
+          git fetch origin ${{ github.base_ref }} --depth=1
+          for service in "${SERVICES[@]}"; do
+            if git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }} | grep "^$service/" > /dev/null; then
+              echo "✔️ $service modified"
+              echo "$service" >> changed.txt
+            fi
+          done
+          if [ -f changed.txt ]; then
+            echo "MODIFIED_SERVICES=$(cat changed.txt | xargs)" >> $GITHUB_ENV
+          fi
+
+      - name: Build only modified services
+        if: env.MODIFIED_SERVICES != ''
+        run: |
+          echo "Modified services: $MODIFIED_SERVICES"
+          for service in $MODIFIED_SERVICES; do
+            echo "🏗️ Building $service..."
+            mvn -f "$service/pom.xml" clean package -DskipTests
+          done
