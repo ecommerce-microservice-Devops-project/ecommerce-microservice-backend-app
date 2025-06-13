@@ -1,0 +1,65 @@
+name: Notify Master
+
+on:
+  pull_request:
+    branches:
+      - master
+    types: [opened, closed]
+
+jobs:
+  notify-master:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract PR data
+        id: pr_data
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const merged = pr.merged;
+            const data = {
+              title: pr.title,
+              author: pr.user.login,
+              body: pr.body,
+              url: pr.html_url,
+              merged_by: merged ? pr.merged_by.login : null
+            };
+            core.setOutput("data", JSON.stringify(data));
+
+      - name: Notify Slack
+        if: github.event.pull_request.merged == true
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": ":tada: *Merge to Master (Producción)*\n>*Título:* ${{ fromJson(steps.pr_data.outputs.data).title }}\n>*Autor:* ${{ fromJson(steps.pr_data.outputs.data).author }}\n>*Mergeado por:* ${{ fromJson(steps.pr_data.outputs.data).merged_by }}\n>*URL:* ${{ fromJson(steps.pr_data.outputs.data).url }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Send email notification
+        if: github.event.pull_request.merged == true
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.your-email.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "[PRODUCCIÓN] Merge a Master: ${{ github.event.pull_request.title }}"
+          to: dev-team@yourcompany.com
+          body: |
+            Se ha realizado un merge en producción:
+
+            ➤ Título: ${{ github.event.pull_request.title }}
+            ➤ Autor: ${{ github.event.pull_request.user.login }}
+            ➤ Mergeado por: ${{ github.event.pull_request.merged_by.login }}
+            ➤ URL: ${{ github.event.pull_request.html_url }}
+
+      - name: Notify Admins
+        if: github.event.pull_request.merged == true
+        run: |
+          echo "Enviando notificación detallada a los administradores..."
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{
+              \"text\": \":warning: *[PRODUCCIÓN]* Pull Request mergeado.\n*Título:* ${{ github.event.pull_request.title }}\n*Autor:* ${{ github.event.pull_request.user.login }}\n*Mergeado por:* ${{ github.event.pull_request.merged_by.login }}\n*URL:* ${{ github.event.pull_request.html_url }}\n*Descripción:* ${{ github.event.pull_request.body }}"
+            }" ${{ secrets.SLACK_WEBHOOK_ADMINS }}
