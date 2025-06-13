@@ -16,17 +16,10 @@ jobs:
         with:
           script: |
             const pr = context.payload.pull_request;
-            const merged = pr.merged;
-            const data = {
-              title: pr.title,
-              author: pr.user.login,
-              body: pr.body,
-              url: pr.html_url,
-              base_branch: pr.base.ref,   // <- rama destino (por ejemplo: develop)
-              head_branch: pr.head.ref,   // <- rama origen (por ejemplo: feature/login)
-              merged_by: merged ? pr.merged_by.login : null
-            };
-            core.setOutput("data", JSON.stringify(data));
+            core.setOutput("title", pr.title);
+            core.setOutput("author", pr.user.login);
+            core.setOutput("url", pr.html_url);
+
 
       - name: Notify Slack
         if: github.event.pull_request.merged == true
@@ -34,10 +27,11 @@ jobs:
         with:
           payload: |
             {
-              "text": ":rocket: *Merge to Develop!* PR by ${{ steps.pr_data.outputs.data }}"
+              "text": ":rocket: *Merge to Develop!*\nTitle: ${{ steps.pr_data.outputs.title }}\nAuthor: ${{ steps.pr_data.outputs.author }}\nURL: ${{ steps.pr_data.outputs.url }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
 
       - name: Send email notification
         if: github.event.pull_request.merged == true
