@@ -1,0 +1,80 @@
+name: Notify Stage 
+
+on:
+  pull_request:
+    branches:
+      - stage
+    types: [opened, closed]
+
+jobs:
+  notify-stage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract PR data
+        id: pr_data
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            core.setOutput("title", pr.title);
+            core.setOutput("author", pr.user.login);
+            core.setOutput("url", pr.html_url);
+
+      - name: Extract PR details
+        id: pr_details
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const commits = pr.commits;
+            const changed_files = pr.changed_files;
+            const merged_by = pr.merged_by ? pr.merged_by.login : 'N/A';
+            const merged_at = pr.merged_at;
+
+            const message = `
+            *Pull Request Merged!*
+            
+            *Title*: ${pr.title}
+            *Author*: ${pr.user.login}
+            *Merged by*: ${merged_by}
+            *Merged at*: ${merged_at}
+            
+            *Base Branch*: ${pr.base.ref}
+            
+            *Commits*: ${commits}
+            *Changed files*: ${changed_files}
+            
+            *URL*: ${pr.html_url}
+            `;
+
+            core.setOutput("email_body", message);
+      - name: Notify Slack
+        if: github.event.pull_request.merged == true
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": ":rocket: *Merge to stage!*\nTitle: ${{ steps.pr_data.outputs.title }}\nAuthor: ${{ steps.pr_data.outputs.author }}\nURL: ${{ steps.pr_data.outputs.url }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Send email notification
+        if: github.event.pull_request.merged == true
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          from: Dev Team <${{ secrets.EMAIL_USERNAME }}>
+          to: ${{ secrets.ADMIN_EMAILS }}
+          subject: "[Dev PR] ${{ github.event.pull_request.title }}"
+          body: ${{ steps.pr_details.outputs.email_body }}
+
+      - name: Notify Admins
+        if: github.event.pull_request.merged == true
+        run: |
+          echo "Sending detailed report to admins..."
+          # Aquí puedes usar otra llamada a Slack o email más detallada.
+
