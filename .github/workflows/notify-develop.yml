@@ -32,7 +32,6 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
-
       - name: Send email notification
         if: github.event.pull_request.merged == true
         uses: dawidd6/action-send-mail@v3
