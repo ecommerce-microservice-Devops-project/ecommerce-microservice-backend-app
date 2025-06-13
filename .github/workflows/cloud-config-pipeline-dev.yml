@@ -30,7 +30,7 @@ jobs:
 
       - name: Build with Maven (skip tests)
         run: mvn -B package -DskipTests --file pom.xml
-        
+
       - name: Docker Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
@@ -39,8 +39,6 @@ jobs:
           IMAGE_TAG=develop-${{ github.run_number }}
           docker build -f cloud-config/Dockerfile \
             -t ${{ secrets.DOCKER_USERNAME }}/cloud-config-ecommerce-boot:$IMAGE_TAG .
-            
-
             
       - name: Installing Trivy
         run: |
