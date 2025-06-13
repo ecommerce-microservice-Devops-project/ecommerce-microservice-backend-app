@@ -38,9 +38,9 @@ jobs:
         with:
           server_address: smtp.gmail.com
           server_port: 587
-          username: ${{ secrets.GMAIL_USER }}
-          password: ${{ secrets.GMAIL_APP_PASSWORD }}
-          from: Dev Team <${{ secrets.GMAIL_USER }}>
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          from: Dev Team <${{ secrets.EMAIL_USERNAME }}>
           to: team@yourcompany.com
           subject: "[Dev PR] ${{ github.event.pull_request.title }}"
           body: |
@@ -49,8 +49,6 @@ jobs:
             Author: ${{ github.event.pull_request.user.login }}
             Merged By: ${{ github.event.pull_request.merged_by.login }}
             URL: ${{ github.event.pull_request.html_url }}
-
-
 
       - name: Notify Admins
         if: github.event.pull_request.merged == true
