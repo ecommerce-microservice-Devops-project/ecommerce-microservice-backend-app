@@ -9,3 +9,6 @@ EXPOSE 8080
 ENTRYPOINT ["java", "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}", "-jar", "api-gateway.jar"]
 
 
+
+
+

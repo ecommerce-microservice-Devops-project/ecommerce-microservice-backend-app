@@ -7,3 +7,6 @@ ADD cloud-config/target/cloud-config-v${PROJECT_VERSION}.jar cloud-config.jar
 EXPOSE 9296
 ENTRYPOINT ["java", "-jar", "cloud-config.jar"]
 
+
+
+
