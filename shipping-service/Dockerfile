@@ -8,5 +8,12 @@ ADD shipping-service/target/shipping-service-v${PROJECT_VERSION}.jar shipping-se
 EXPOSE 8600
 ENTRYPOINT ["java", "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}", "-jar", "shipping-service.jar"]
 
+#test
+
+
+
+
+
+
 
 

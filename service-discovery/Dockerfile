@@ -9,3 +9,7 @@ ADD service-discovery/target/service-discovery-v${PROJECT_VERSION}.jar service-d
 EXPOSE 8761
 ENTRYPOINT ["java", "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}", "-jar", "service-discovery.jar"]
 
+
+
+
+#test
