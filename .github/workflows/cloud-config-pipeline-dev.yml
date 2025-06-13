@@ -39,7 +39,7 @@ jobs:
           IMAGE_TAG=develop-${{ github.run_number }}
           docker build -f cloud-config/Dockerfile \
             -t ${{ secrets.DOCKER_USERNAME }}/cloud-config-ecommerce-boot:$IMAGE_TAG .
-            
+    
       - name: Installing Trivy
         run: |
           echo "Installing Trivy..."
