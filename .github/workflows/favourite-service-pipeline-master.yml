@@ -1,11 +1,11 @@
-name: Develop CI/CD for api-gateway only on relevant changes
+name: Master CI/CD for favourite-service only on relevant changes
 
 on:
   push:
     branches:
-      - develop
+      - master
     paths:
-      - 'api-gateway/**'
+      - 'favourite-service/**'
 
 jobs:
   build_and_push:
@@ -28,17 +28,17 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
 
-      - name: Build with Maven (skip tests)
-        run: mvn -B package -DskipTests --file pom.xml
+      - name: Build with Maven (include tests)
+        run: mvn -B package --file pom.xml
 
       - name: Docker Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build Docker image for api-gateway
+      - name: Build Docker image for favourite-service
         run: |
-          IMAGE_TAG=develop-${{ github.run_number }}
-          docker build -f api-gateway/Dockerfile \
-            -t ${{ secrets.DOCKER_USERNAME }}/api-gateway-ecommerce-boot:$IMAGE_TAG .
+          IMAGE_TAG=master-${{ github.run_number }}
+          docker build -f favourite-service/Dockerfile \
+            -t ${{ secrets.DOCKER_USERNAME }}/favourite-service-ecommerce-boot:$IMAGE_TAG .
 
       - name: Installing Trivy
         run: |
@@ -47,11 +47,11 @@ jobs:
           
       - name: Scan Docker image with Trivy
         run: |
-          IMAGE_TAG=develop-${{ github.run_number }}
+          IMAGE_TAG=master-${{ github.run_number }}
           echo "Scanning image..."
-          trivy image --severity HIGH,CRITICAL --exit-code 1 --no-progress ${{ secrets.DOCKER_USERNAME }}/api-gateway-ecommerce-boot:$IMAGE_TAG || true
+          trivy image --severity HIGH,CRITICAL --exit-code 1 --no-progress ${{ secrets.DOCKER_USERNAME }}/favourite-service-ecommerce-boot:$IMAGE_TAG || true
 
       - name: Push Docker image
         run: |
-          IMAGE_TAG=develop-${{ github.run_number }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/api-gateway-ecommerce-boot:$IMAGE_TAG
+          IMAGE_TAG=master-${{ github.run_number }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/favourite-service-ecommerce-boot:$IMAGE_TAG

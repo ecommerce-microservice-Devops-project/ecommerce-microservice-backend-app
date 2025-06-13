@@ -1,11 +1,11 @@
-name: Develop CI/CD for api-gateway only on relevant changes
+name: Develop CI/CD for cloud-config only on relevant changes
 
 on:
   push:
     branches:
       - develop
     paths:
-      - 'api-gateway/**'
+      - 'cloud-config/**'
 
 jobs:
   build_and_push:
@@ -34,12 +34,12 @@ jobs:
       - name: Docker Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build Docker image for api-gateway
+      - name: Build Docker image for cloud-config
         run: |
           IMAGE_TAG=develop-${{ github.run_number }}
-          docker build -f api-gateway/Dockerfile \
-            -t ${{ secrets.DOCKER_USERNAME }}/api-gateway-ecommerce-boot:$IMAGE_TAG .
-
+          docker build -f cloud-config/Dockerfile \
+            -t ${{ secrets.DOCKER_USERNAME }}/cloud-config-ecommerce-boot:$IMAGE_TAG .
+            
       - name: Installing Trivy
         run: |
           echo "Installing Trivy..."
@@ -49,9 +49,9 @@ jobs:
         run: |
           IMAGE_TAG=develop-${{ github.run_number }}
           echo "Scanning image..."
-          trivy image --severity HIGH,CRITICAL --exit-code 1 --no-progress ${{ secrets.DOCKER_USERNAME }}/api-gateway-ecommerce-boot:$IMAGE_TAG || true
+          trivy image --severity HIGH,CRITICAL --exit-code 1 --no-progress ${{ secrets.DOCKER_USERNAME }}/cloud-config-ecommerce-boot:$IMAGE_TAG || true
 
       - name: Push Docker image
         run: |
           IMAGE_TAG=develop-${{ github.run_number }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/api-gateway-ecommerce-boot:$IMAGE_TAG
+          docker push ${{ secrets.DOCKER_USERNAME }}/cloud-config-ecommerce-boot:$IMAGE_TAG
