@@ -40,7 +40,6 @@ jobs:
             *Merged at*: ${merged_at}
             
             *Base Branch*: ${pr.base.ref}
-            *Source Branch*: ${pr.head.ref}
             
             *Commits*: ${commits}
             *Changed files*: ${changed_files}
