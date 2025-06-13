@@ -10,3 +10,6 @@ EXPOSE 8400
 ENTRYPOINT ["java", "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}", "-jar", "payment-service.jar"]
 
 
+
+#test
+

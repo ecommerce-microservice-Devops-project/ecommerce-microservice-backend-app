@@ -1,0 +1,57 @@
+name: Develop CI/CD for user-service only on relevant changes
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'user-service/**'
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate DockerHub secrets
+        run: |
+          if [ -z "${{ secrets.DOCKER_USERNAME }}" ] || [ -z "${{ secrets.DOCKER_PASSWORD }}" ]; then
+            echo "DockerHub credentials are not set!" >&2
+            exit 1
+          fi
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Build with Maven (skip tests)
+        run: mvn -B package -DskipTests --file pom.xml
+
+      - name: Docker Login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker image for user-service
+        run: |
+          IMAGE_TAG=develop-${{ github.run_number }}
+          docker build -f user-service/Dockerfile \
+            -t ${{ secrets.DOCKER_USERNAME }}/user-service-ecommerce-boot:$IMAGE_TAG .
+
+      - name: Installing Trivy
+        run: |
+          echo "Installing Trivy..."
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+          
+      - name: Scan Docker image with Trivy
+        run: |
+          IMAGE_TAG=develop-${{ github.run_number }}
+          echo "Scanning image..."
+          trivy image --severity HIGH,CRITICAL --exit-code 1 --no-progress ${{ secrets.DOCKER_USERNAME }}/user-service-ecommerce-boot:$IMAGE_TAG || true
+
+      - name: Push Docker image
+        run: |
+          IMAGE_TAG=develop-${{ github.run_number }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/user-service-ecommerce-boot:$IMAGE_TAG
