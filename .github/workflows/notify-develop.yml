@@ -75,7 +75,6 @@ jobs:
           subject: "[Dev PR] ${{ github.event.pull_request.title }}"
           body: ${{ steps.pr_details.outputs.email_body }}
 
-
       - name: Notify Admins
         if: github.event.pull_request.merged == true
         run: |
