@@ -36,11 +36,11 @@ jobs:
         if: github.event.pull_request.merged == true
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: smtp.your-email.com
+          server_address: smtp.gmail.com
           server_port: 587
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          from: Dev Team <${{ secrets.EMAIL_USERNAME }}>
+          username: ${{ secrets.GMAIL_USER }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          from: Dev Team <${{ secrets.GMAIL_USER }}>
           to: team@yourcompany.com
           subject: "[Dev PR] ${{ github.event.pull_request.title }}"
           body: |
@@ -49,6 +49,7 @@ jobs:
             Author: ${{ github.event.pull_request.user.login }}
             Merged By: ${{ github.event.pull_request.merged_by.login }}
             URL: ${{ github.event.pull_request.html_url }}
+
 
 
       - name: Notify Admins
