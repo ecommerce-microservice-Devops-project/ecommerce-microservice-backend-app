@@ -8,7 +8,4 @@ ADD favourite-service/target/favourite-service-v${PROJECT_VERSION}.jar favourite
 EXPOSE 8800
 ENTRYPOINT ["java", "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}", "-jar", "favourite-service.jar"]
 
-
-
-
-#test
+#test-launch

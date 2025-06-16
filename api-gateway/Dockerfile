@@ -8,8 +8,4 @@ ADD api-gateway/target/api-gateway-v${PROJECT_VERSION}.jar api-gateway.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}", "-jar", "api-gateway.jar"]
 
-
-
-
-
-#test
+#test-launch
