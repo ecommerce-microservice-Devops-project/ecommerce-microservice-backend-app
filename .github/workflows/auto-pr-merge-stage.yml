@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
 
       - name: Create and merge PR
         uses: devops-infra/action-pull-request@v0.5.1
@@ -25,7 +27,5 @@ jobs:
           target_branch: stage
           title: Auto merge develop to stage
           body: Auto merge generado por CI
-          reviewers: FFabianna
-          assignees: FFabianna
-          delete_source_branch: false
-          merge_method: merge
+          draft: false
+          allow_no_diff: true 
