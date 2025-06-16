@@ -25,7 +25,7 @@ jobs:
           target_branch: stage
           title: Auto merge develop to stage
           body: Auto merge generado por CI
-          reviewers: sebas3004tian
-          assignees: sebas3004tian
+          reviewers: FFabianna
+          assignees: FFabianna
           delete_source_branch: false
           merge_method: merge
