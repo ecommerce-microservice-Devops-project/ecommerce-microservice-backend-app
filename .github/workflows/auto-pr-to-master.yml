@@ -1,4 +1,4 @@
-name: Auto PR from stage to master
+name: Auto Merge stage into master
 
 on:
   push:
@@ -10,20 +10,22 @@ permissions:
   pull-requests: write
 
 jobs:
-  create-pull-request:
+  auto-merge:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Create Pull Request to master
-        uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: master
-          branch: stage
-          title: 'Sync stage to master'
-          body: |
-            Se generó automáticamente un Pull Request para propagar los últimos cambios de `develop` a `master`.
+          fetch-depth: 0 
+
+      - name: Create and merge PR
+        uses: devops-infra/action-pull-request@v0.5.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: stage
+          target_branch: master
+          title: Auto merge stage to master
+          body: Auto merge generado por CI
           draft: false
+          allow_no_diff: true 
