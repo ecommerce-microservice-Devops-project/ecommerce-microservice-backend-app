@@ -48,9 +48,6 @@ jobs:
             `;
 
             core.setOutput("email_body", message);
-
-
-
       - name: Notify Slack
         if: github.event.pull_request.merged == true
         uses: slackapi/slack-github-action@v1.25.0
