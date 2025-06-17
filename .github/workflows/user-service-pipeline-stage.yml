@@ -62,3 +62,4 @@ jobs:
         run: |
           IMAGE_TAG=stage-${{ github.run_number }}
           docker push ${{ secrets.DOCKER_USERNAME }}/user-service-ecommerce-boot:$IMAGE_TAG
+#
