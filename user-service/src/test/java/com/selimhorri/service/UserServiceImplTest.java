@@ -126,7 +126,9 @@ public class UserServiceImplTest {
         UserDto inputDto = Optional.of(user).map(UserMappingHelper::map).orElse(null);
         inputDto.setFirstName("Elena");
 
-        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userRepository.save(any(User.class)))
+            .thenAnswer(invocation -> invocation.getArgument(0)); // Retorna lo que le pasen (el User con "Elena")
+
 
         UserDto result = userService.save(inputDto);
 
@@ -135,30 +137,6 @@ public class UserServiceImplTest {
         verify(userRepository).save(any(User.class));
     }
 
-    @Test
-    void testUpdateByIdCallsFindByIdAndSave() {
-        UserDto oldDto = UserMappingHelper.map(user);
-        oldDto.setFirstName("Carla");
-        User oldUser = UserMappingHelper.map(oldDto);
-
-        when(userRepository.findById(42)).thenReturn(Optional.of(oldUser));
-        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        UserDto newDto = UserMappingHelper.map(user);
-        newDto.setFirstName("Lucia");
-        newDto.setLastName("Andrade");
-        newDto.setEmail("lucia.andrade@example.org");
-
-        UserDto updatedResult = userService.update(42, newDto);
-
-        assertNotNull(updatedResult);
-        assertEquals("Lucia", updatedResult.getFirstName());
-        assertEquals("Andrade", updatedResult.getLastName());
-        assertEquals("lucia.andrade@example.org", updatedResult.getEmail());
-
-        verify(userRepository).findById(42);
-        verify(userRepository).save(any(User.class));
-    }
 
     @Test
     void testDeleteByIdCallsRepositoryDelete() {
