@@ -137,7 +137,6 @@ public class UserServiceImplTest {
         verify(userRepository).save(any(User.class));
     }
 
-
     @Test
     void testDeleteByIdCallsRepositoryDelete() {
         doNothing().when(userRepository).deleteById(42);
