@@ -31,7 +31,7 @@ jobs:
       - name: Run unit tests for UserServiceImplTests only
         run: |
           chmod +x ./mvnw
-          ./mvnw -pl user-service -am -Dtest=UserServiceImplTests test
+          ./mvnw -pl user-service -am -Dtest=UserServiceImplTest test
 
       - name: Package user-service with wrapper
         run: |
@@ -62,3 +62,4 @@ jobs:
         run: |
           IMAGE_TAG=stage-${{ github.run_number }}
           docker push ${{ secrets.DOCKER_USERNAME }}/user-service-ecommerce-boot:$IMAGE_TAG
+#
